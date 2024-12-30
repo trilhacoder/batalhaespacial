@@ -209,6 +209,8 @@
 
     let jogando = false
 
+    let comandosPressionados = []
+
     document.querySelector(".tela_gameover .jogar_novamente").addEventListener("click", jogarNovamente)
     document.querySelector(".tela_vitoria .jogar_novamente").addEventListener("click", jogarNovamente)
     document.querySelector(".tela_iniciar .jogar_novamente").addEventListener("click", jogarNovamente)
@@ -245,6 +247,7 @@
     }
 
     function gameLoop() {      
+      // console.log(comandosPressionados)
       let image = new Image()
       image.src = "fundo.jpg"
       ctx.drawImage(image, 0, 0, tela.width, tela.height)
@@ -286,8 +289,8 @@
             new Audio("tiro_impacto.mp3").play()
             if (nave2.vidas <= 0) {
               nave2.vivo = false
-              console.log("Acertou!")
-              console.log("Nave2 voce morreu: " + nave2.vidas)
+              // console.log("Acertou!")
+              // console.log("Nave2 voce morreu: " + nave2.vidas)
               new Audio("explosao.mp3").play()
 
               let image = new Image()
@@ -296,7 +299,7 @@
 
               break
             }
-            console.log("Vidas nave2: " + nave2.vidas)
+            // console.log("Vidas nave2: " + nave2.vidas)
           }        
         }
         indexTirosAtingidos.forEach(indexTiroAtingido => nave.tiros.splice(indexTiroAtingido, 1))
@@ -311,8 +314,8 @@
             new Audio("tiro_impacto.mp3").play()
             if (nave.vidas <= 0) {
               nave.vivo = false
-              console.log("Acertou!")
-              console.log("Nave voce morreu: " + nave.vidas)
+              // console.log("Acertou!")
+              // console.log("Nave voce morreu: " + nave.vidas)
               
               new Audio("explosao.mp3").play()
 
@@ -322,7 +325,7 @@
 
               break
             }
-            console.log("Vidas nave: " + nave.vidas)
+            // console.log("Vidas nave: " + nave.vidas)
           }
         }
         indexTirosAtingidos2.forEach(indexTiroAtingido => nave2.tiros.splice(indexTiroAtingido, 1))
@@ -369,23 +372,28 @@
     addEventListener("keydown", (event) => {
       const key = event.key.toLowerCase();
 
-      if (key == "arrowright") {
+      // console.log("===> pressionado")
+      // console.log(key)
+
+      comandosPressionados[key] = true
+
+      if (comandosPressionados["arrowright"]) {
         nave.controle.direita = true
       } 
-      if (key == "arrowleft") {
+      if (comandosPressionados["arrowleft"]) {
         nave.controle.esquerda = true
       }
-      if (key == "0") {
+      if (comandosPressionados["0"]) {
         nave.atirar()
       }
 
-      if (key == "s") {
+      if (comandosPressionados["s"]) {
         nave2.controle.direita = true
       }
-      if (key == "a") {
+      if (comandosPressionados["a"]) {
         nave2.controle.esquerda = true
       } 
-      if (key == " ") {
+      if (comandosPressionados[" "]) {
         nave2.atirar()
       }
     });    
@@ -393,19 +401,21 @@
     addEventListener("keyup", (event) => {
       const key = event.key.toLowerCase();
 
-      if (key == "arrowright") {
+      if (comandosPressionados["arrowright"]) {
         nave.controle.direita = false
       } 
-      if (key == "arrowleft") {
+      if (comandosPressionados["arrowleft"]) {
         nave.controle.esquerda = false
       }
       
-      if (key == "s") {
+      if (comandosPressionados["s"]) {
         nave2.controle.direita = false
       } 
-      if (key == "a") {
+      if (comandosPressionados["a"]) {
         nave2.controle.esquerda = false
       }
+
+      delete comandosPressionados[key]
     });
 
   </script>
