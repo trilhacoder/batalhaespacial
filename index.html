@@ -207,9 +207,6 @@
     let nave2 = new Nave("inimigo", ctx, posicaoNave2X, posicaoNave2Y, larguraNave, alturaNave, tamanhoMovimento)
     nave2.controle.direita = true
 
-    let acumuladorTirosTimeout = 0
-    let velocidadeTiros = 1000
-
     let jogando = false
 
     document.querySelector(".tela_gameover .jogar_novamente").addEventListener("click", jogarNovamente)
@@ -232,10 +229,6 @@
 
     function reiniciar() {
       reiniciarNaves()
-
-      acumuladorTirosTimeout = 0
-      velocidadeTiros = 1000
-
       jogando = true
     }
 
@@ -257,8 +250,7 @@
       ctx.drawImage(image, 0, 0, tela.width, tela.height)
 
       if (jogando) {
-        acumuladorTirosTimeout += velocidadeTiros
-        setTimeout(() => { nave2.atirar() }, acumuladorTirosTimeout)
+        nave2.atirar()
         
         if (nave.controle.direita && !nave.encostouLadoDireiroTela(tela.width)) {
           nave.moverDireita()
@@ -355,6 +347,7 @@
           ctx.drawImage(image, 0, 0, tela.width, tela.height)
           document.querySelector(".tela_gameover").style.visibility = "visible"
           jogando = false
+          nave.tiros = []
           reiniciarNaves()
         }
 
@@ -365,6 +358,7 @@
           ctx.drawImage(image, 0, 0, tela.width, tela.height)
           document.querySelector(".tela_vitoria").style.visibility = "visible"
           jogando = false
+          nave2.tiros = []
           reiniciarNaves()
         }
       }
