@@ -68,6 +68,7 @@
       controle = { esquerda: false, direita: false, atirando: false }
       vidas = 5
       vivo = true
+      ultimoDisparo = new Date()
 
       constructor(jogador, ctx, posicaoX, posicaoY, larguraNave, alturaNave, tamanhoMovimento) {
         this.jogador = jogador
@@ -125,9 +126,12 @@
       }
 
       atirar() {
-        let posicaoNaveY = this.jogador == "eu" ? this.posicaoY : this.posicaoY + this.altura
-        this.tiros.push({ largura: 10, altura: 10, posicaoX: this.posicaoX + this.largura/2 - 10/2, posicaoY: posicaoNaveY})
-        new Audio("tiro.mp3").play()        
+        if (new Date() - this.ultimoDisparo > 1000) {
+          let posicaoNaveY = this.jogador == "eu" ? this.posicaoY : this.posicaoY + this.altura
+          this.tiros.push({ largura: 10, altura: 10, posicaoX: this.posicaoX + this.largura/2 - 10/2, posicaoY: posicaoNaveY})
+          new Audio("tiro.mp3").play()
+          this.ultimoDisparo = new Date()
+        }
       }
 
       encostouLadoDireiroTela(larguraTela) {
