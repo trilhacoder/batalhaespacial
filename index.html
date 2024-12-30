@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Space Battle</title>
+  <style>
+    .tela {
+      background-color: #000000;
+    }
+
+    .tela_gameover, .tela_vitoria, .tela_iniciar {      
+      width: 720px;
+      height: 1200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      position: absolute;
+      color: white;
+      visibility: hidden;
+      font-size: 72px;
+      gap: 20px;
+    }
+
+    .tela_iniciar {
+      visibility: visible;
+    }
+
+    .jogar_novamente {
+      font-size: 24px;
+      padding: 20px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background-color: rgb(193, 127, 29);      
+    }
+    
+  </style>
+</head>
+<body>
+  <div id="log"></div>
+  <div class="tela_iniciar">
+    <span>Space Battle</span>
+    <button class="jogar_novamente">Iniciar!</button>
+  </div>
+  <div class="tela_gameover">
+    <span>Game Over!</span>
+    <button class="jogar_novamente">Jogar novamente</button>
+  </div>
+  <div class="tela_vitoria">
+    <span>Você venceu!</span>
+    <button class="jogar_novamente">Jogar novamente</button>
+  </div>
+  <canvas id="tela" class="tela" width="720" height="1200" />
+
+  <script>
+    class Nave {
+
+      largura = 100
+      altura = 100
+      posicaoX = 0
+      posicaoY = 0
+      tamanhoMovimento = 10
+      tiros = []
+      atirando = false
+      velocidadeTiro = 15
+      controle = { esquerda: false, direita: false, atirando: false }
+      vidas = 5
+      vivo = true
+
+      constructor(jogador, ctx, posicaoX, posicaoY, larguraNave, alturaNave, tamanhoMovimento) {
+        this.jogador = jogador
+        this.ctx = ctx
+        this.posicaoX = posicaoX
+        this.posicaoY = posicaoY
+        this.largura = larguraNave
+        this.altura = alturaNave
+        this.tamanhoMovimento = tamanhoMovimento
+      }
+
+      desenhar() {
+        ctx.fillStyle = "gray"
+        if (this.vivo) {
+
+          let image = new Image()
+          if (this.jogador == "inimigo") {
+            image.src = "nave_inimigo.png"
+          } else {
+            image.src = "nave.png"
+          }
+          ctx.drawImage(image, this.posicaoX, this.posicaoY, this.largura, this.altura)
+  
+          // bala
+          if (this.tiros.length > 0) {
+            let indexTirosPerdidos = []
+            this.tiros.forEach((tiro, index) => {
+              if (this.jogador == "eu") {
+                if (tiro.posicaoY <= 0) {
+                  indexTirosPerdidos.push(index)
+                } else {
+                  tiro.posicaoY -= this.velocidadeTiro
+                  ctx.fillRect(tiro.posicaoX, tiro.posicaoY, tiro.largura, tiro.altura)
+                }
+              } else {
+                if (tiro.posicaoY > 1200) {
+                  indexTirosPerdidos.push(index)
+                } else {
+                  tiro.posicaoY += this.velocidadeTiro
+                  ctx.fillRect(tiro.posicaoX, tiro.posicaoY, tiro.largura, tiro.altura)
+                }
+              }
+            });
+            indexTirosPerdidos.forEach(indexTiroPerdido => this.tiros.splice(indexTiroPerdido, 1))
+          }
+        }
+      }
+
+      moverDireita() {
+        this.posicaoX += this.tamanhoMovimento
+      }
+
+      moverEsquerda() {        
+        this.posicaoX -= this.tamanhoMovimento
+      }
+
+      atirar() {
+        let posicaoNaveY = this.jogador == "eu" ? this.posicaoY : this.posicaoY + this.altura
+        this.tiros.push({ largura: 10, altura: 10, posicaoX: this.posicaoX + this.largura/2 - 10/2, posicaoY: posicaoNaveY})
+        new Audio("tiro.mp3").play()        
+      }
+
+      encostouLadoDireiroTela(larguraTela) {
+        return this.posicaoX > larguraTela - this.largura
+      }
+
+      encostouLadoEsquerdoTela() {
+        return this.posicaoX < 0
+      }
+    }
+
+    // pré carrega os assets
+    new Audio("tiro_impacto.mp3")
+    new Audio("tiro.mp3")
+    
+    let tela = document.getElementById("tela")
+    let ctx = tela.getContext("2d")   
+    let larguraNave = 100
+    let alturaNave = 100
+    let tamanhoMovimento = 10
+    let margemSuperior = 50
+    let margemInferior = 50    
+    
+    let posicaoNaveX = tela.width/2 - larguraNave/2
+    let posicaoNaveY = tela.height - alturaNave - margemInferior
+
+    let posicaoNave2X = tela.width/2 - larguraNave/2
+    let posicaoNave2Y = 0 + margemSuperior
+    
+    let nave = new Nave("eu", ctx, posicaoNaveX, posicaoNaveY, larguraNave, alturaNave, tamanhoMovimento)
+    let nave2 = new Nave("inimigo", ctx, posicaoNave2X, posicaoNave2Y, larguraNave, alturaNave, tamanhoMovimento)
+    nave2.controle.direita = true
+
+    let acumuladorTirosTimeout = 0
+    let velocidadeTiros = 1000
+
+    let jogando = false
+
+    gameLoop()
+
+    document.querySelector(".tela_gameover .jogar_novamente").addEventListener("click", jogarNovamente)
+    document.querySelector(".tela_vitoria .jogar_novamente").addEventListener("click", jogarNovamente)
+    document.querySelector(".tela_iniciar .jogar_novamente").addEventListener("click", jogarNovamente)
+
+    function jogarNovamente() {
+      document.querySelector(".tela_gameover").style.visibility = "hidden"
+      document.querySelector(".tela_vitoria").style.visibility = "hidden"
+      document.querySelector(".tela_iniciar").style.visibility = "hidden"
+      reiniciar()
+    }
+
+    function reiniciar() {
+      reiniciarNaves()
+
+      acumuladorTirosTimeout = 0
+      velocidadeTiros = 1000
+
+      jogando = true
+    }
+
+    function reiniciarNaves() {
+      posicaoNaveX = tela.width/2 - larguraNave/2
+      posicaoNaveY = tela.height - alturaNave - margemInferior
+
+      posicaoNave2X = tela.width/2 - larguraNave/2
+      posicaoNave2Y = 0 + margemSuperior
+      
+      nave = new Nave("eu", ctx, posicaoNaveX, posicaoNaveY, larguraNave, alturaNave, tamanhoMovimento)
+      nave2 = new Nave("inimigo", ctx, posicaoNave2X, posicaoNave2Y, larguraNave, alturaNave, tamanhoMovimento)
+      nave2.controle.direita = true
+    }
+
+    function gameLoop() {      
+      let image = new Image()
+      image.src = "fundo.jpg"
+      ctx.drawImage(image, 0, 0, tela.width, tela.height)
+
+      if (jogando) {
+        acumuladorTirosTimeout += velocidadeTiros
+        setTimeout(() => { nave2.atirar() }, acumuladorTirosTimeout)
+        
+        if (nave.controle.direita && !nave.encostouLadoDireiroTela(tela.width)) {
+          nave.moverDireita()
+        } 
+        if (nave.controle.esquerda && !nave.encostouLadoEsquerdoTela()) {
+          nave.moverEsquerda()        
+        }
+
+        if (nave2.controle.direita) {
+          if (nave2.encostouLadoDireiroTela(tela.width)) {
+            nave2.controle.direita = false
+            nave2.controle.esquerda = true
+          }
+          nave2.moverDireita()
+        } else if (nave2.controle.esquerda) {
+          if (nave2.encostouLadoEsquerdoTela(tela.width)) {
+            nave2.controle.direita = true
+            nave2.controle.esquerda = false
+          }
+          nave2.moverEsquerda()
+        } else {
+          nave2.controle.direita = false
+          nave2.controle.esquerda = false
+        }
+        
+        let indexTirosAtingidos = [] 
+        for (let index = 0; index < nave.tiros.length; index++) {
+          const tiro = nave.tiros[index];
+          if (nave2.vivo && (tiro.posicaoY < nave2.posicaoY + nave2.altura) && (tiro.posicaoX > nave2.posicaoX && tiro.posicaoX < nave2.posicaoX + nave2.largura)) {
+            indexTirosAtingidos.push(index)
+            nave2.vidas--
+            new Audio("tiro_impacto.mp3").play()
+            if (nave2.vidas <= 0) {
+              nave2.vivo = false
+              console.log("Acertou!")
+              console.log("Nave2 voce morreu: " + nave2.vidas)
+              new Audio("explosao.mp3").play()
+
+              let image = new Image()
+              image.src = "explosao.png"
+              ctx.drawImage(image, nave.posicaoX, nave.posicaoY, nave.largura, nave.altura)
+
+              break
+            }
+            console.log("Vidas nave2: " + nave2.vidas)
+          }        
+        }
+        indexTirosAtingidos.forEach(indexTiroAtingido => nave.tiros.splice(indexTiroAtingido, 1))
+
+        let indexTirosAtingidos2 = [] 
+        for (let index = 0; index < nave2.tiros.length; index++) {
+          const tiro = nave2.tiros[index];
+          if (nave.vivo && (tiro.posicaoY > nave.posicaoY) && (tiro.posicaoX > nave.posicaoX && tiro.posicaoX < nave.posicaoX + nave.largura)) {
+            indexTirosAtingidos2.push(index)
+            nave.vidas--
+            new Audio("tiro_impacto.mp3").play()
+            if (nave.vidas <= 0) {
+              nave.vivo = false
+              console.log("Acertou!")
+              console.log("Nave voce morreu: " + nave.vidas)
+              
+              new Audio("explosao.mp3").play()
+
+              let image = new Image()
+              image.src = "explosao.png"
+              ctx.drawImage(image, nave.posicaoX, nave.posicaoY, nave.largura, nave.altura)
+
+              break
+            }
+            console.log("Vidas nave: " + nave.vidas)
+          }
+        }
+        indexTirosAtingidos2.forEach(indexTiroAtingido => nave2.tiros.splice(indexTiroAtingido, 1))
+
+        nave.desenhar()
+        nave2.desenhar()
+
+        ctx.font = "30px Arial"
+        let tiroPosicao2 = nave2.tiros.length > 0 ? `(${nave2.tiros[0].posicaoX},${nave2.tiros[0].posicaoY})` : ""
+        // ctx.fillText(`Inimigo - (${nave2.posicaoX},${nave2.posicaoY}) - (${tiroPosicao2})`, 10, 50)
+        ctx.fillText(`Vidas: ${nave2.vidas} de 5`, 10, 50)
+
+        ctx.font = "30px Arial"
+        let tiroPosicao = nave.tiros.length > 0 ? `(${nave.tiros[0].posicaoX},${nave.tiros[0].posicaoY})` : ""
+        // ctx.fillText(`Eu - (${nave.posicaoX},${nave.posicaoY}) - (${tiroPosicao})`, 10, 1100)
+        ctx.fillText(`Vidas: ${nave.vidas} de 5`, 10, 1175)
+
+        if (!nave.vivo) {
+          reiniciar()
+          let image = new Image()
+          image.src = "fundo.jpg"
+          ctx.drawImage(image, 0, 0, tela.width, tela.height)
+          document.querySelector(".tela_gameover").style.visibility = "visible"
+          jogando = false
+          reiniciarNaves()
+        }
+
+        if (!nave2.vivo) {
+          reiniciar()
+          let image = new Image()
+          image.src = "fundo.jpg"
+          ctx.drawImage(image, 0, 0, tela.width, tela.height)
+          document.querySelector(".tela_vitoria").style.visibility = "visible"
+          jogando = false
+          reiniciarNaves()
+        }
+      }
+
+      requestAnimationFrame(gameLoop)
+    }
+
+    addEventListener("keydown", (event) => {
+      const key = event.key.toLowerCase();
+
+      if (key == "arrowright") {
+        nave.controle.direita = true
+      } 
+      if (key == "arrowleft") {
+        nave.controle.esquerda = true
+      }
+      if (key == "0") {
+        nave.atirar()
+      }
+
+      if (key == "s") {
+        nave2.controle.direita = true
+      }
+      if (key == "a") {
+        nave2.controle.esquerda = true
+      } 
+      if (key == " ") {
+        nave2.atirar()
+      }
+    });    
+
+    addEventListener("keyup", (event) => {
+      const key = event.key.toLowerCase();
+
+      if (key == "arrowright") {
+        nave.controle.direita = false
+      } 
+      if (key == "arrowleft") {
+        nave.controle.esquerda = false
+      }
+      
+      if (key == "s") {
+        nave2.controle.direita = false
+      } 
+      if (key == "a") {
+        nave2.controle.esquerda = false
+      }
+    });
+
+  </script>
+</body>
+</html>
