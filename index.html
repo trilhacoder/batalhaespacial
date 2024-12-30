@@ -35,6 +35,29 @@
       cursor: pointer;
       background-color: rgb(193, 127, 29);      
     }
+
+    .vida {
+      width: 25px;
+    }
+
+    .vidas {
+      position: absolute;
+      visibility: hidden;
+    }
+
+    .vidas_inimigo {
+      top: 20px;
+      left: 570px;
+    }
+
+    .vidas_eu {
+      top: 1170px;
+      left: 570px;
+    }
+
+    .vida_usada {
+      opacity: 0.25;
+    }
     
   </style>
 </head>
@@ -52,9 +75,26 @@
     <span>Você venceu!</span>
     <button class="jogar_novamente">Jogar novamente</button>
   </div>
+  <div class="vidas vidas_inimigo">
+    <img class="vida" src="vida.svg">
+    <img class="vida" src="vida.svg">
+    <img class="vida" src="vida.svg">
+    <img class="vida" src="vida.svg">
+    <img class="vida" src="vida.svg">
+  </div>
+  <div class="vidas vidas_eu">
+    <img class="vida" src="vida.svg">
+    <img class="vida" src="vida.svg">
+    <img class="vida" src="vida.svg">
+    <img class="vida" src="vida.svg">
+    <img class="vida" src="vida.svg">
+  </div>
+  <audio class="musica_fundo" src="musica_fundo.mp3" autoplay loop></audio>
+
   <canvas id="tela" class="tela" width="720" height="1200" />
 
   <script>
+
     class Nave {
 
       largura = 100
@@ -91,7 +131,7 @@
             image.src = "nave.png"
           }
           ctx.drawImage(image, this.posicaoX, this.posicaoY, this.largura, this.altura)
-  
+
           // bala
           if (this.tiros.length > 0) {
             let indexTirosPerdidos = []
@@ -146,6 +186,8 @@
     // pré carrega os assets
     new Audio("tiro_impacto.mp3")
     new Audio("tiro.mp3")
+
+    document.querySelector(".musica_fundo").volume = 0.5
     
     let tela = document.getElementById("tela")
     let ctx = tela.getContext("2d")   
@@ -170,18 +212,23 @@
 
     let jogando = false
 
-    gameLoop()
-
     document.querySelector(".tela_gameover .jogar_novamente").addEventListener("click", jogarNovamente)
     document.querySelector(".tela_vitoria .jogar_novamente").addEventListener("click", jogarNovamente)
     document.querySelector(".tela_iniciar .jogar_novamente").addEventListener("click", jogarNovamente)
+
+    gameLoop()
 
     function jogarNovamente() {
       document.querySelector(".tela_gameover").style.visibility = "hidden"
       document.querySelector(".tela_vitoria").style.visibility = "hidden"
       document.querySelector(".tela_iniciar").style.visibility = "hidden"
+      document.querySelector(".vidas_inimigo").style.visibility = "visible"
+      document.querySelector(".vidas_eu").style.visibility = "visible"
+
+      document.querySelectorAll(".vida").forEach(vida => vida.classList.remove("vida_usada"))
+
       reiniciar()
-    }
+ 0   }
 
     function reiniciar() {
       reiniciarNaves()
@@ -242,6 +289,7 @@
           const tiro = nave.tiros[index];
           if (nave2.vivo && (tiro.posicaoY < nave2.posicaoY + nave2.altura) && (tiro.posicaoX > nave2.posicaoX && tiro.posicaoX < nave2.posicaoX + nave2.largura)) {
             indexTirosAtingidos.push(index)
+            document.querySelectorAll(".vidas_inimigo .vida")[nave2.vidas-1].classList.add("vida_usada")
             nave2.vidas--
             new Audio("tiro_impacto.mp3").play()
             if (nave2.vidas <= 0) {
@@ -266,6 +314,7 @@
           const tiro = nave2.tiros[index];
           if (nave.vivo && (tiro.posicaoY > nave.posicaoY) && (tiro.posicaoX > nave.posicaoX && tiro.posicaoX < nave.posicaoX + nave.largura)) {
             indexTirosAtingidos2.push(index)
+            document.querySelectorAll(".vidas_eu .vida")[nave.vidas-1].classList.add("vida_usada")
             nave.vidas--
             new Audio("tiro_impacto.mp3").play()
             if (nave.vidas <= 0) {
@@ -292,12 +341,12 @@
         ctx.font = "30px Arial"
         let tiroPosicao2 = nave2.tiros.length > 0 ? `(${nave2.tiros[0].posicaoX},${nave2.tiros[0].posicaoY})` : ""
         // ctx.fillText(`Inimigo - (${nave2.posicaoX},${nave2.posicaoY}) - (${tiroPosicao2})`, 10, 50)
-        ctx.fillText(`Vidas: ${nave2.vidas} de 5`, 10, 50)
+        // ctx.fillText(`Vidas: ${nave2.vidas} de 5`, 10, 50)
 
         ctx.font = "30px Arial"
         let tiroPosicao = nave.tiros.length > 0 ? `(${nave.tiros[0].posicaoX},${nave.tiros[0].posicaoY})` : ""
         // ctx.fillText(`Eu - (${nave.posicaoX},${nave.posicaoY}) - (${tiroPosicao})`, 10, 1100)
-        ctx.fillText(`Vidas: ${nave.vidas} de 5`, 10, 1175)
+        // ctx.fillText(`Vidas: ${nave.vidas} de 5`, 10, 1175)
 
         if (!nave.vivo) {
           reiniciar()
