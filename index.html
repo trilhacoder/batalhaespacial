@@ -246,16 +246,16 @@
 
     document.querySelector(".musica_fundo").volume = 0.5
     
-    let tela = document.getElementById("tela")
     let telaGameover = document.querySelector(".tela_gameover")
     let telaVitoria = document.querySelector(".tela_vitoria")
     let telaIniciar = document.querySelector(".tela_iniciar")
-    let ctx = tela.getContext("2d")   
     let larguraNave = 100
     let alturaNave = 100
     let tamanhoMovimento = 10
     let margemSuperior = 50
     let margemInferior = 50
+    let tela = document.getElementById("tela")
+
 
     tela.height = window.innerHeight
     telaGameover.height = tela.height
@@ -276,7 +276,8 @@
       margemInferior = 100
       document.querySelector(".vidas_eu").style.left = tela.width/2 + "px"
     }
-    
+
+    let ctx = tela.getContext("2d")    
     
     let posicaoNaveX = tela.width/2 - larguraNave/2
     let posicaoNaveY = tela.height - alturaNave - margemInferior
