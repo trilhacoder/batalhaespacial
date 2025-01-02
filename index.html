@@ -29,6 +29,19 @@
       gap: 20px;
     }
 
+    .controles {
+      position: absolute;
+      display: flex;
+      gap: 10px;
+      visibility: hidden;     
+    }
+
+    .controles button {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%; 
+    }
+
     .tela_iniciar {
       visibility: visible;
     }
@@ -67,6 +80,8 @@
   </style>
 </head>
 <body>
+  <audio class="musica_fundo" src="musica_fundo.mp3" autoplay loop></audio>
+
   <div id="log"></div>
   <div class="tela_iniciar">
     <span>Batalha Espacial</span>
@@ -94,7 +109,12 @@
     <img class="vida" src="vida.svg">
     <img class="vida" src="vida.svg">
   </div>
-  <audio class="musica_fundo" src="musica_fundo.mp3" autoplay loop></audio>
+
+  <div class="controles">
+    <button class="esq"><</button>
+    <button class="dir">></button>
+    <button class="atirar">Atirar</button>
+  </div>
 
   <canvas id="tela" class="tela" width="720" />
 
@@ -221,8 +241,12 @@
     telaVitoria.height = tela.height
     telaIniciar.height = tela.height
 
-    document.querySelector(".vidas_eu").style.top = tela.height - 40 + "px" //"1170px";
+    document.querySelector(".vidas_eu").style.top = tela.height - 40 + "px"
     document.querySelector(".vidas_eu").style.left = "570px";
+
+    document.querySelector(".controles").style.top = tela.height - 60 + "px"
+    document.querySelector(".controles").style.left = tela.width/2 - 75 + "px"
+    
     
     let posicaoNaveX = tela.width/2 - larguraNave/2
     let posicaoNaveY = tela.height - alturaNave - margemInferior
@@ -269,6 +293,9 @@
       telaIniciar.style.visibility = "hidden"
       document.querySelector(".vidas_inimigo").style.visibility = "visible"
       document.querySelector(".vidas_eu").style.visibility = "visible"
+      if (isMobile()) {
+        document.querySelector(".controles").style.visibility = "visible"
+      }
 
       document.querySelectorAll(".vida").forEach(vida => vida.classList.remove("vida_usada"))
 
@@ -314,6 +341,11 @@
           ctx.drawImage(image, 0, 0, tela.width, tela.height)
 
           if (jogando) {
+
+            if (comandosPressionados["atirar"]) {
+              nave.atirar()
+            }
+
             if (Math.random() > 0.9) {
               nave2.atirar()
             }
@@ -412,6 +444,7 @@
               image.src = "fundo.jpg"
               ctx.drawImage(image, 0, 0, tela.width, tela.height)
               document.querySelector(".tela_gameover").style.visibility = "visible"
+              document.querySelector(".controles").style.visibility = "hidden"
               jogando = false
               nave.tiros = []
               reiniciarNaves()
@@ -423,6 +456,7 @@
               image.src = "fundo.jpg"
               ctx.drawImage(image, 0, 0, tela.width, tela.height)
               document.querySelector(".tela_vitoria").style.visibility = "visible"
+              document.querySelector(".controles").style.visibility = "hidden"
               jogando = false
               nave2.tiros = []
               reiniciarNaves()
@@ -431,8 +465,6 @@
 
           
       }
-      
-      
 
     }
 
@@ -484,6 +516,59 @@
 
       delete comandosPressionados[key]
     });
+
+    document.querySelectorAll(".controles button").forEach(botao => {
+      botao.addEventListener("touchstart", (event) => {
+        const key = event.target.className;
+
+        console.log("===> touchstart")
+        console.log(key)
+
+        const touches = event.changedTouches;
+        
+        for (let i = 0; i < touches.length; i++) {
+          console.log(`touchstart: ${i}.`);        
+        }
+
+        comandosPressionados[key] = true      
+
+        if (comandosPressionados["dir"]) {
+          nave.controle.direita = true
+        } 
+        if (comandosPressionados["esq"]) {
+          nave.controle.esquerda = true
+        }
+
+        // if (comandosPressionados["atirar"]) {
+        //   nave.controle.esquerda = true
+        // }
+      });
+
+      botao.addEventListener("touchend", (event) => {
+        const key = event.target.className;
+
+        console.log("===> touchend")
+        console.log(key)
+
+        const touches = event.changedTouches;
+        
+        for (let i = 0; i < touches.length; i++) {
+          console.log(`touchend: ${i}.`);        
+        }
+
+        comandosPressionados[key] = true      
+
+        if (comandosPressionados["dir"]) {
+          nave.controle.direita = false
+        } 
+        if (comandosPressionados["esq"]) {
+          nave.controle.esquerda = false
+        }
+
+        delete comandosPressionados[key]
+      });
+
+    })
 
   </script>
 </body>
