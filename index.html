@@ -16,8 +16,8 @@
     }
 
     .tela_gameover, .tela_vitoria, .tela_iniciar {      
-      width: 720px;
       height: 100%;
+      width: 720px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -204,9 +204,12 @@
     let tamanhoMovimento = 10
     let margemSuperior = 50
     let margemInferior = 50
-    alert(window.innerWidth)
-    if (window.innerWidth > "720") {
-      tela.width = "720"
+
+    if (isMobile()) {
+      tela.width = window.innerWidth
+      telaGameover.width = tela.width
+      telaVitoria.width = tela.width
+      telaIniciar.width = tela.width
     }
     
     tela.height = window.innerHeight
@@ -214,8 +217,8 @@
     telaVitoria.height = tela.height
     telaIniciar.height = tela.height
 
-      document.querySelector(".vidas_eu").style.top = tela.height - 40 + "px" //"1170px";
-      document.querySelector(".vidas_eu").style.left = "570px";
+    document.querySelector(".vidas_eu").style.top = tela.height - 40 + "px" //"1170px";
+    document.querySelector(".vidas_eu").style.left = "570px";
     
     let posicaoNaveX = tela.width/2 - larguraNave/2
     let posicaoNaveY = tela.height - alturaNave - margemInferior
@@ -236,6 +239,22 @@
     document.querySelector(".tela_iniciar .jogar_novamente").addEventListener("click", jogarNovamente)
 
     gameLoop()
+
+    function isMobile() {
+      const toMatch = [
+          /Android/i,
+          /webOS/i,
+          /iPhone/i,
+          /iPad/i,
+          /iPod/i,
+          /BlackBerry/i,
+          /Windows Phone/i
+      ];
+      
+      return toMatch.some((toMatchItem) => {
+          return navigator.userAgent.match(toMatchItem);
+      });
+    }
 
     function jogarNovamente() {
       telaGameover.style.visibility = "hidden"
