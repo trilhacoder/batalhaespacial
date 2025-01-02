@@ -33,13 +33,24 @@
       position: absolute;
       display: flex;
       gap: 10px;
-      /* visibility: hidden;      */
+      visibility: hidden;     
     }
 
     .controles button {
       width: 100px;
       height: 75px;
       border-radius: 10px; 
+      background-color: rgb(193, 171, 29);
+      border: none;
+      font-size: 20px;
+    }
+
+    .controles button.atirar {
+      width: 100px;
+      height: 75px;
+      border-radius: 10px; 
+      background-color: rgb(193, 29, 29);
+      border: none;
     }
 
     .tela_iniciar {
@@ -52,7 +63,7 @@
       border: none;
       border-radius: 10px;
       cursor: pointer;
-      background-color: rgb(193, 127, 29);      
+      background-color: rgb(193, 127, 29);  
     }
 
     .vida {
@@ -62,6 +73,7 @@
     .vidas {
       position: absolute;
       visibility: hidden;
+      display: flex;
     }
 
     .vidas_inimigo {
@@ -76,6 +88,11 @@
     .vida_usada {
       opacity: 0.25;
     }
+
+    .manual_controles {
+      font-size: 16px;
+      margin-top: 25px;
+    }
     
   </style>
 </head>
@@ -86,6 +103,13 @@
   <div class="tela_iniciar">
     <span>Batalha Espacial</span>
     <button class="jogar_novamente">Iniciar!</button>
+    <div class="manual_controles">
+      <ul>
+        <li>Atirar: Barra de espaço</li>
+        <li>Mover para esquerda: Seta para esquerda</li>
+        <li>Mover para direita: Seta para direita</li>
+      </ul>
+    </div>
   </div>
   <div class="tela_gameover">
     <span>Game Over!</span>
@@ -227,26 +251,27 @@
     let alturaNave = 100
     let tamanhoMovimento = 10
     let margemSuperior = 50
-    let margemInferior = 100
+    let margemInferior = 50
+
+    tela.height = window.innerHeight
+    telaGameover.height = tela.height
+    telaVitoria.height = tela.height
+    telaIniciar.height = tela.height
 
     if (isMobile()) {
       tela.width = window.innerWidth
       telaGameover.width = tela.width
       telaVitoria.width = tela.width
       telaIniciar.width = tela.width
+      document.querySelector(".controles").style.top = tela.height - 90 + "px"
+      document.querySelector(".controles").style.left = tela.width/2 - 150 + "px"
+      document.querySelector(".manual_controles").style.visibility = "hidden"
+      margemInferior = 100
     }
     
-    tela.height = window.innerHeight
-    telaGameover.height = tela.height
-    telaVitoria.height = tela.height
-    telaIniciar.height = tela.height
 
     document.querySelector(".vidas_eu").style.top = tela.height - 40 + "px"
-    document.querySelector(".vidas_eu").style.left = "570px";
-
-    document.querySelector(".controles").style.top = tela.height - 90 + "px"
-    document.querySelector(".controles").style.left = tela.width/2 - 150 + "px"
-    
+    document.querySelector(".vidas_eu").style.left = "570px";    
     
     let posicaoNaveX = tela.width/2 - larguraNave/2
     let posicaoNaveY = tela.height - alturaNave - margemInferior
@@ -519,6 +544,7 @@
 
     document.querySelectorAll(".controles button").forEach(botao => {
       botao.addEventListener("touchstart", (event) => {
+        event.preventDefault()
         const key = event.target.className;
 
         console.log("===> touchstart")
@@ -538,13 +564,10 @@
         if (comandosPressionados["esq"]) {
           nave.controle.esquerda = true
         }
-
-        // if (comandosPressionados["atirar"]) {
-        //   nave.controle.esquerda = true
-        // }
       });
 
       botao.addEventListener("touchend", (event) => {
+        event.preventDefault()
         const key = event.target.className;
 
         console.log("===> touchend")
