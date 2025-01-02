@@ -33,13 +33,13 @@
       position: absolute;
       display: flex;
       gap: 10px;
-      visibility: hidden;     
+      /* visibility: hidden;      */
     }
 
     .controles button {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%; 
+      width: 100px;
+      height: 75px;
+      border-radius: 10px; 
     }
 
     .tela_iniciar {
@@ -227,7 +227,7 @@
     let alturaNave = 100
     let tamanhoMovimento = 10
     let margemSuperior = 50
-    let margemInferior = 50
+    let margemInferior = 100
 
     if (isMobile()) {
       tela.width = window.innerWidth
@@ -244,8 +244,8 @@
     document.querySelector(".vidas_eu").style.top = tela.height - 40 + "px"
     document.querySelector(".vidas_eu").style.left = "570px";
 
-    document.querySelector(".controles").style.top = tela.height - 60 + "px"
-    document.querySelector(".controles").style.left = tela.width/2 - 75 + "px"
+    document.querySelector(".controles").style.top = tela.height - 90 + "px"
+    document.querySelector(".controles").style.left = tela.width/2 - 150 + "px"
     
     
     let posicaoNaveX = tela.width/2 - larguraNave/2
