@@ -3,15 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Space Battle</title>
+  <title>Batalha Espacial</title>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     .tela {
-      background-color: #000000;
+      background-color: #000000;      
     }
 
     .tela_gameover, .tela_vitoria, .tela_iniciar {      
       width: 720px;
-      height: 1200px;
+      height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -46,12 +52,11 @@
     }
 
     .vidas_inimigo {
-      top: 20px;
+      top: 10px;
       left: 570px;
     }
 
     .vidas_eu {
-      top: 1170px;
       left: 570px;
     }
 
@@ -64,7 +69,7 @@
 <body>
   <div id="log"></div>
   <div class="tela_iniciar">
-    <span>Space Battle</span>
+    <span>Batalha Espacial</span>
     <button class="jogar_novamente">Iniciar!</button>
   </div>
   <div class="tela_gameover">
@@ -91,7 +96,7 @@
   </div>
   <audio class="musica_fundo" src="musica_fundo.mp3" autoplay loop></audio>
 
-  <canvas id="tela" class="tela" width="720" height="1200" />
+  <canvas id="tela" class="tela" width="720" />
 
   <script>
 
@@ -144,7 +149,7 @@
                   ctx.fillRect(tiro.posicaoX, tiro.posicaoY, tiro.largura, tiro.altura)
                 }
               } else {
-                if (tiro.posicaoY > 1200) {
+                if (tiro.posicaoY > tela.height) {
                   indexTirosPerdidos.push(index)
                 } else {
                   tiro.posicaoY += this.velocidadeTiro
@@ -166,7 +171,7 @@
       }
 
       atirar() {
-        if (new Date() - this.ultimoDisparo > 1000) {
+        if (new Date() - this.ultimoDisparo > 300) {
           let posicaoNaveY = this.jogador == "eu" ? this.posicaoY : this.posicaoY + this.altura
           this.tiros.push({ largura: 10, altura: 10, posicaoX: this.posicaoX + this.largura/2 - 10/2, posicaoY: posicaoNaveY})
           new Audio("tiro.mp3").play()
@@ -190,12 +195,23 @@
     document.querySelector(".musica_fundo").volume = 0.5
     
     let tela = document.getElementById("tela")
+    let telaGameover = document.querySelector(".tela_gameover")
+    let telaVitoria = document.querySelector(".tela_vitoria")
+    let telaIniciar = document.querySelector(".tela_iniciar")
     let ctx = tela.getContext("2d")   
     let larguraNave = 100
     let alturaNave = 100
     let tamanhoMovimento = 10
     let margemSuperior = 50
-    let margemInferior = 50    
+    let margemInferior = 50
+    
+    tela.height = window.innerHeight
+    telaGameover.height = tela.height
+    telaVitoria.height = tela.height
+    telaIniciar.height = tela.height
+
+      document.querySelector(".vidas_eu").style.top = tela.height - 40 + "px" //"1170px";
+      document.querySelector(".vidas_eu").style.left = "570px";
     
     let posicaoNaveX = tela.width/2 - larguraNave/2
     let posicaoNaveY = tela.height - alturaNave - margemInferior
@@ -218,16 +234,16 @@
     gameLoop()
 
     function jogarNovamente() {
-      document.querySelector(".tela_gameover").style.visibility = "hidden"
-      document.querySelector(".tela_vitoria").style.visibility = "hidden"
-      document.querySelector(".tela_iniciar").style.visibility = "hidden"
+      telaGameover.style.visibility = "hidden"
+      telaVitoria.style.visibility = "hidden"
+      telaIniciar.style.visibility = "hidden"
       document.querySelector(".vidas_inimigo").style.visibility = "visible"
       document.querySelector(".vidas_eu").style.visibility = "visible"
 
       document.querySelectorAll(".vida").forEach(vida => vida.classList.remove("vida_usada"))
 
       reiniciar()
-   }
+    }
 
     function reiniciar() {
       reiniciarNaves()
@@ -253,7 +269,9 @@
       ctx.drawImage(image, 0, 0, tela.width, tela.height)
 
       if (jogando) {
-        nave2.atirar()
+        if (Math.random() > 0.9) {
+          nave2.atirar()
+        }
         
         if (nave.controle.direita && !nave.encostouLadoDireiroTela(tela.width)) {
           nave.moverDireita()
