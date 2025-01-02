@@ -4,6 +4,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Batalha Espacial</title>
+  <script>
+
+    function isMobile() {
+      const toMatch = [
+          /Android/i,
+          /webOS/i,
+          /iPhone/i,
+          /iPad/i,
+          /iPod/i,
+          /BlackBerry/i,
+          /Windows Phone/i
+      ];
+      
+      return toMatch.some((toMatchItem) => {
+          return navigator.userAgent.match(toMatchItem);
+      });
+    }
+
+    var larguraTela = "723"
+    var alturaTela = "1200"
+    let margemInferior = 50
+    if (isMobile()) {
+      console.log("===> mobile!!")
+      larguraTela = window.innerWidth 
+      alturaTela = window.innerHeight
+      console.log(larguraTela)
+      margemInferior = 100
+    }
+  </script>
   <style>
     * {
       box-sizing: border-box;
@@ -17,7 +46,7 @@
 
     .tela_gameover, .tela_vitoria, .tela_iniciar {      
       height: 100%;
-      width: 720px;
+      /* width: 720px; */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -25,8 +54,9 @@
       position: absolute;
       color: white;
       visibility: hidden;
-      font-size: 72px;
+      font-size: 62px;
       gap: 20px;
+      text-align: center;
     }
 
     .controles {
@@ -35,21 +65,19 @@
       gap: 10px;
       visibility: hidden;
       justify-content: space-around;
-      width: 720px;
+      width: 100%;
     }
 
     .controles button {
-      width: 100px;
-      height: 75px;
+      width: 75px;
+      height: 50px;
       border-radius: 10px; 
       background-color: rgb(193, 171, 29);
       border: none;
-      font-size: 20px;
+      font-size: 18px;
     }
 
     .controles button.atirar {
-      width: 100px;
-      height: 75px;
       border-radius: 10px; 
       background-color: rgb(193, 29, 29);
       border: none;
@@ -80,7 +108,7 @@
 
     .vidas_inimigo {
       top: 10px;
-      left: 570px;
+      right: 10px;
     }
 
     .vidas_eu {
@@ -144,7 +172,7 @@
     <button class="atirar">Atirar</button>
   </div>
 
-  <canvas id="tela" class="tela" width="720" />
+  <canvas id="tela" class="tela" width="725" />
 
   <script>
 
@@ -253,28 +281,23 @@
     let alturaNave = 100
     let tamanhoMovimento = 10
     let margemSuperior = 50
-    let margemInferior = 50
+    
     let tela = document.getElementById("tela")
 
-
-    tela.height = window.innerHeight
+    tela.height = alturaTela
+    tela.width = larguraTela
     telaGameover.height = tela.height
     telaVitoria.height = tela.height
     telaIniciar.height = tela.height
-    
+
     document.querySelector(".vidas_eu").style.top = tela.height - 40 + "px"
     document.querySelector(".vidas_eu").style.left = "570px";    
 
     if (isMobile()) {
-      tela.width = window.innerWidth
-      telaGameover.width = tela.width
-      telaVitoria.width = tela.width
-      telaIniciar.width = tela.width
-      document.querySelector(".controles").style.top = tela.height - 90 + "px"
-      // document.querySelector(".controles").style.left = tela.width/2 - 150 + "px"
+      document.querySelector(".controles").style.top = tela.height - 60 + "px"
       document.querySelector(".manual_controles").style.visibility = "hidden"
-      margemInferior = 100
-      document.querySelector(".vidas_eu").style.left = tela.width/2 + "px"
+      document.querySelector(".vidas_eu").style.top = tela.height - 95 + "px"
+      document.querySelector(".vidas_eu").style.left = tela.width - 135 + "px"
     }
 
     let ctx = tela.getContext("2d")    
@@ -302,21 +325,7 @@
     startTime = then;
     gameLoop()
 
-    function isMobile() {
-      const toMatch = [
-          /Android/i,
-          /webOS/i,
-          /iPhone/i,
-          /iPad/i,
-          /iPod/i,
-          /BlackBerry/i,
-          /Windows Phone/i
-      ];
-      
-      return toMatch.some((toMatchItem) => {
-          return navigator.userAgent.match(toMatchItem);
-      });
-    }
+    
 
     function jogarNovamente() {
       telaGameover.style.visibility = "hidden"
