@@ -233,14 +233,20 @@
                   indexTirosPerdidos.push(index)
                 } else {
                   tiro.posicaoY -= this.velocidadeTiro
-                  ctx.fillRect(tiro.posicaoX, tiro.posicaoY, tiro.largura, tiro.altura)
+                  ctx.beginPath();
+                  ctx.arc(tiro.posicaoX, tiro.posicaoY, tiro.largura, 0, 2 * Math.PI, false)
+                  ctx.fillStyle = 'gray';
+                  ctx.fill();
                 }
               } else {
                 if (tiro.posicaoY > tela.height) {
                   indexTirosPerdidos.push(index)
                 } else {
                   tiro.posicaoY += this.velocidadeTiro
-                  ctx.fillRect(tiro.posicaoX, tiro.posicaoY, tiro.largura, tiro.altura)
+                  ctx.beginPath();
+                  ctx.arc(tiro.posicaoX, tiro.posicaoY, tiro.largura, 0, 2 * Math.PI, false)
+                  ctx.fillStyle = 'gray';
+                  ctx.fill();
                 }
               }
             });
@@ -260,7 +266,7 @@
       atirar() {
         if (new Date() - this.ultimoDisparo > 300) {
           let posicaoNaveY = this.jogador == "eu" ? this.posicaoY : this.posicaoY + this.altura
-          let tamanhoBala = isMobile() ? 5 : 10
+          let tamanhoBala = isMobile() ? 3 : 6
           this.tiros.push({ largura: tamanhoBala, altura: tamanhoBala, posicaoX: this.posicaoX + this.largura/2 - 10/2, posicaoY: posicaoNaveY})
           let audioTiro = new Audio("tiro.mp3")
           audioTiro.volume = 0.3
@@ -343,6 +349,7 @@
     document.querySelector(".tela_iniciar .iniciar").addEventListener("click", () => {
       musicaFundo.volume = 0.5
       musicaFundo.play()
+      musicaFundo.loop = true
     })
 
     function jogarNovamente() {
