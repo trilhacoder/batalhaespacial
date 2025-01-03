@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Batalha Espacial</title>
   <script>
 
@@ -139,6 +139,9 @@
   <!-- <audio class="musica_fundo" src="musica_fundo.mp3" autoplay loop></audio> -->
 
   <div id="log"></div>
+  <div id="log1"></div>
+  <div id="log2"></div>
+  <div id="log3"></div>
   <div class="tela tela_iniciar">
     <span>Batalha Espacial</span>
     <button class="iniciar">Iniciar!</button>
@@ -603,14 +606,30 @@
 
     let xMoveAnterior
     addEventListener("touchstart", function (e) {
+      // e.preventDefault()
       // console.log("touchstart")
+
+      document.getElementById("log1").textContent = ""
+      for (let index = 0; index < e.touches.length; index++) {
+        const t = e.touches[index];
+        console.log(t)
+        document.getElementById("log1").textContent = "touchstart" + index + " - " + t.identifier        
+      }
 
       let touch = e.touches[0]
 
       // console.log(`touchstart: ${touch.clientX}.`);
     });
     addEventListener("touchend", function (e) {
+      // e.preventDefault()
       // console.log("touchend")
+
+      document.getElementById("log2").textContent = ""
+      for (let index = 0; index < e.touches.length; index++) {
+        const t = e.touches[index];
+        console.log(t)
+        document.getElementById("log2").textContent = "touchend" + index + " - " + t.identifier        
+      }
 
       let touch = e.touches[0]
       xMoveAnterior = undefined
@@ -619,7 +638,15 @@
       // console.log(`touchend: ${touch.clientX}.`);
     });
     addEventListener("touchmove", function (e) {
+      // e.preventDefault()
       // console.log("touchmove")
+
+      document.getElementById("log3").textContent = ""
+      for (let index = 0; index < e.touches.length; index++) {
+        const t = e.touches[index];
+        console.log(t)
+        document.getElementById("log3").textContent = "touchmove" + index + " - " + t.identifier        
+      }
       
       let touch = e.touches[0]
 
