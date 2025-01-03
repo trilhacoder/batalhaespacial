@@ -361,7 +361,7 @@
       document.querySelector(".vidas_inimigo").style.visibility = "visible"
       document.querySelector(".vidas_eu").style.visibility = "visible"
       if (isMobile()) {
-        document.querySelector(".controles").style.visibility = "visible"
+        // document.querySelector(".controles").style.visibility = "visible"
       }
 
       document.querySelectorAll(".vida").forEach(vida => vida.classList.remove("vida_usada"))
@@ -623,8 +623,8 @@
       // e.preventDefault()
       // console.log("touchend")
       // if (e.touches.length > 1) {
-        // const key = e.target.className;
-        // delete comandosPressionados["atirar"]
+        const key = e.target.className;
+        delete comandosPressionados["atirar"]
       // }
 
       let touch = e.touches[0]
