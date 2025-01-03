@@ -68,6 +68,10 @@
       width: 100%;
     }
 
+    .controles .esq {
+      margin-right: 10px;
+    }
+
     .controles button {
       width: 75px;
       height: 50px;
@@ -87,7 +91,7 @@
       visibility: visible;
     }
 
-    .jogar_novamente {
+    .jogar_novamente, .iniciar {
       font-size: 24px;
       padding: 20px;
       border: none;
@@ -98,6 +102,10 @@
 
     .vida {
       width: 25px;
+    }
+
+    .vida.mobile {
+      width: 15px;
     }
 
     .vidas {
@@ -127,12 +135,12 @@
   </style>
 </head>
 <body>
-  <audio class="musica_fundo" src="musica_fundo.mp3" autoplay loop></audio>
+  <!-- <audio class="musica_fundo" src="musica_fundo.mp3" autoplay loop></audio> -->
 
   <div id="log"></div>
   <div class="tela_iniciar">
     <span>Batalha Espacial</span>
-    <button class="jogar_novamente">Iniciar!</button>
+    <button class="iniciar">Iniciar!</button>
     <div class="manual_controles">
       <ul>
         <li>Atirar: Barra de espaço</li>
@@ -178,7 +186,7 @@
 
     var stop = false;
     var frameCount = 0;
-    var fps = 30, fpsInterval, startTime, now, then, elapsed;
+    var fps = isMobile() ? 15 : 30, fpsInterval, startTime, now, then, elapsed;
 
     class Nave {
 
@@ -189,7 +197,7 @@
       tamanhoMovimento = 10
       tiros = []
       atirando = false
-      velocidadeTiro = 15
+      velocidadeTiro = isMobile() ? 7 : 15
       controle = { esquerda: false, direita: false, atirando: false }
       vidas = 5
       vivo = true
@@ -253,7 +261,8 @@
       atirar() {
         if (new Date() - this.ultimoDisparo > 300) {
           let posicaoNaveY = this.jogador == "eu" ? this.posicaoY : this.posicaoY + this.altura
-          this.tiros.push({ largura: 10, altura: 10, posicaoX: this.posicaoX + this.largura/2 - 10/2, posicaoY: posicaoNaveY})
+          let tamanhoBala = isMobile() ? 5 : 10
+          this.tiros.push({ largura: tamanhoBala, altura: tamanhoBala, posicaoX: this.posicaoX + this.largura/2 - 10/2, posicaoY: posicaoNaveY})
           new Audio("tiro.mp3").play()
           this.ultimoDisparo = new Date()
         }
@@ -271,15 +280,14 @@
     // pré carrega os assets
     new Audio("tiro_impacto.mp3")
     new Audio("tiro.mp3")
-
-    document.querySelector(".musica_fundo").volume = 0.5
-    
+    let musicaFundo = new Audio("musica_fundo.mp3")
+        
     let telaGameover = document.querySelector(".tela_gameover")
     let telaVitoria = document.querySelector(".tela_vitoria")
     let telaIniciar = document.querySelector(".tela_iniciar")
-    let larguraNave = 100
-    let alturaNave = 100
-    let tamanhoMovimento = 10
+    let larguraNave = isMobile() ? 50 : 100
+    let alturaNave = isMobile() ? 50 : 100
+    let tamanhoMovimento = isMobile() ? 5 : 10
     let margemSuperior = 50
     
     let tela = document.getElementById("tela")
@@ -297,7 +305,8 @@
       document.querySelector(".controles").style.top = tela.height - 60 + "px"
       document.querySelector(".manual_controles").style.visibility = "hidden"
       document.querySelector(".vidas_eu").style.top = tela.height - 95 + "px"
-      document.querySelector(".vidas_eu").style.left = tela.width - 135 + "px"
+      document.querySelector(".vidas_eu").style.left = tela.width - 85 + "px"
+      document.querySelectorAll(".vida").forEach(vida => vida.classList.add("mobile"))
     }
 
     let ctx = tela.getContext("2d")    
@@ -318,14 +327,17 @@
 
     document.querySelector(".tela_gameover .jogar_novamente").addEventListener("click", jogarNovamente)
     document.querySelector(".tela_vitoria .jogar_novamente").addEventListener("click", jogarNovamente)
-    document.querySelector(".tela_iniciar .jogar_novamente").addEventListener("click", jogarNovamente)
+    document.querySelector(".tela_iniciar .iniciar").addEventListener("click", jogarNovamente)
 
     fpsInterval = 1000 / fps;
     then = Date.now();
     startTime = then;
     gameLoop()
 
-    
+    document.querySelector(".tela_iniciar .iniciar").addEventListener("click", () => {
+      musicaFundo.volume = 0.5
+      musicaFundo.play()
+    })
 
     function jogarNovamente() {
       telaGameover.style.visibility = "hidden"
@@ -607,6 +619,8 @@
       });
 
     })
+
+    
 
   </script>
 </body>
