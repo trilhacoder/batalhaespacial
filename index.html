@@ -263,7 +263,7 @@
           let tamanhoBala = isMobile() ? 5 : 10
           this.tiros.push({ largura: tamanhoBala, altura: tamanhoBala, posicaoX: this.posicaoX + this.largura/2 - 10/2, posicaoY: posicaoNaveY})
           let audioTiro = new Audio("tiro.mp3")
-          audioTiro.volume = 0.5
+          audioTiro.volume = 0.3
           audioTiro.play()
           this.ultimoDisparo = new Date()
         }
