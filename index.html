@@ -30,7 +30,6 @@
       larguraTela = window.innerWidth 
       alturaTela = window.innerHeight
       // console.log(larguraTela)
-      margemInferior = 100
     }
   </script>
   <style>
@@ -315,13 +314,18 @@
     document.querySelector(".vidas_eu").style.top = tela.height - 40 + "px"
     document.querySelector(".vidas_eu").style.left = "570px";    
 
+    document.querySelector(".vidas_inimigo").style.left = tela.width - 150 + "px"
+
     if (isMobile()) {
       document.querySelector(".controles").style.top = tela.height - 60 + "px"
       document.querySelector(".manual_controles").style.visibility = "hidden"
-      document.querySelector(".vidas_eu").style.top = tela.height - 95 + "px"
+      document.querySelector(".vidas_eu").style.top = tela.height - 25 + "px"
       document.querySelector(".vidas_eu").style.left = tela.width - 85 + "px"
       document.querySelectorAll(".vida").forEach(vida => vida.classList.add("mobile"))
+      document.querySelector(".vidas_inimigo").style.left = tela.width - 85 + "px"
     }
+
+    document.querySelector(".vidas_inimigo").style.top =  "15px"
 
     let ctx = tela.getContext("2d")    
     
