@@ -609,6 +609,8 @@
       // e.preventDefault()
       // console.log("touchstart")
 
+      if (e.touches.length > 1) return
+
       document.getElementById("log1").textContent = ""
       for (let index = 0; index < e.touches.length; index++) {
         const t = e.touches[index];
@@ -623,6 +625,7 @@
     addEventListener("touchend", function (e) {
       // e.preventDefault()
       // console.log("touchend")
+      if (e.touches.length > 1) return
 
       document.getElementById("log2").textContent = ""
       for (let index = 0; index < e.touches.length; index++) {
@@ -640,6 +643,8 @@
     addEventListener("touchmove", function (e) {
       // e.preventDefault()
       // console.log("touchmove")
+
+      if (e.touches.length > 1) return
 
       document.getElementById("log3").textContent = ""
       for (let index = 0; index < e.touches.length; index++) {
