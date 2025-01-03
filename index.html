@@ -588,22 +588,21 @@
       delete comandosPressionados[key]
     });
 
-    document.querySelector(".controles .atirar").addEventListener("touchstart", (event) => {
-      event.preventDefault()
+    document.querySelector(".controles .atirar").addEventListener("touchstart", (e) => {
+      e.preventDefault()
 
       if (e.touches.length < 2) return
 
-      const key = event.target.className;
+      const key = e.target.className;
       comandosPressionados[key] = true      
     });
 
-    document.querySelector(".controles .atirar").addEventListener("touchend", (event) => {
-      event.preventDefault()
+    document.querySelector(".controles .atirar").addEventListener("touchend", (e) => {
+      e.preventDefault()
 
       // if (e.touches.length < 2) return
 
-      const key = event.target.className;
-      comandosPressionados[key] = false
+      const key = e.target.className;
       delete comandosPressionados[key]
     });
 
