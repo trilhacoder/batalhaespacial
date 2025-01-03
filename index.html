@@ -588,39 +588,45 @@
       delete comandosPressionados[key]
     });
 
-    document.querySelector(".controles .atirar").addEventListener("touchstart", (e) => {
-      e.preventDefault()
+    // document.querySelector(".controles .atirar").addEventListener("touchstart", (e) => {
+    //   e.preventDefault()
 
-      if (e.touches.length < 2) return
+    //   if (e.touches.length < 2) return
 
-      const key = e.target.className;
-      comandosPressionados[key] = true      
-    });
+            
+    // });
 
-    document.querySelector(".controles .atirar").addEventListener("touchend", (e) => {
-      e.preventDefault()
+    // document.querySelector(".controles .atirar").addEventListener("touchend", (e) => {
+    //   // e.preventDefault()
 
-      // if (e.touches.length < 2) return
+    //   // if (e.touches.length < 2) return
 
-      const key = e.target.className;
-      delete comandosPressionados[key]
-    });
+    //   // const key = e.target.className;
+    //   // delete comandosPressionados[key]
+    // });
 
     let xMoveAnterior
     addEventListener("touchstart", function (e) {
       // e.preventDefault()
       // console.log("touchstart")
 
-      if (e.touches.length > 1) return
+      if (e.touches.length > 1) {
+        const key = e.target.className;
+        comandosPressionados[key] = true
+      }
 
       let touch = e.touches[0]
 
       // console.log(`touchstart: ${touch.clientX}.`);
     });
+
     addEventListener("touchend", function (e) {
       // e.preventDefault()
       // console.log("touchend")
-      if (e.touches.length > 1) return
+      if (e.touches.length > 1) {
+        const key = e.target.className;
+        delete comandosPressionados[key]
+      }
 
       let touch = e.touches[0]
       xMoveAnterior = undefined
@@ -628,6 +634,7 @@
       nave.controle.esquerda = false
       // console.log(`touchend: ${touch.clientX}.`);
     });
+
     addEventListener("touchmove", function (e) {
       // e.preventDefault()
       // console.log("touchmove")
