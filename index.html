@@ -40,13 +40,12 @@
       padding: 0;
     }
 
-    .tela {
+    .tela_jogo {
       background-color: #000000;      
     }
 
     .tela_gameover, .tela_vitoria, .tela_iniciar {      
       height: 100%;
-      /* width: 720px; */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -138,7 +137,7 @@
   <!-- <audio class="musica_fundo" src="musica_fundo.mp3" autoplay loop></audio> -->
 
   <div id="log"></div>
-  <div class="tela_iniciar">
+  <div class="tela tela_iniciar">
     <span>Batalha Espacial</span>
     <button class="iniciar">Iniciar!</button>
     <div class="manual_controles">
@@ -149,11 +148,11 @@
       </ul>
     </div>
   </div>
-  <div class="tela_gameover">
+  <div class="tela tela_gameover">
     <span>Game Over!</span>
     <button class="jogar_novamente">Jogar novamente</button>
   </div>
-  <div class="tela_vitoria">
+  <div class="tela tela_vitoria">
     <span>Você venceu!</span>
     <button class="jogar_novamente">Jogar novamente</button>
   </div>
@@ -180,7 +179,7 @@
     <button class="atirar">Atirar</button>
   </div>
 
-  <canvas id="tela" class="tela" width="725" />
+  <canvas id="tela_jogo" class="tela_jogo" width="725" />
 
   <script>
 
@@ -290,13 +289,18 @@
     let tamanhoMovimento = isMobile() ? 5 : 10
     let margemSuperior = 50
     
-    let tela = document.getElementById("tela")
+    let tela = document.getElementById("tela_jogo")
 
     tela.height = alturaTela
     tela.width = larguraTela
     telaGameover.height = tela.height
+    telaGameover.style.width = tela.width + "px"
     telaVitoria.height = tela.height
+    telaVitoria.style.width = tela.width + "px"
     telaIniciar.height = tela.height
+    telaIniciar.style.width = tela.width + "px"
+
+    console.log(tela.width)
 
     document.querySelector(".vidas_eu").style.top = tela.height - 40 + "px"
     document.querySelector(".vidas_eu").style.left = "570px";    
