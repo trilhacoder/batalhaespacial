@@ -590,14 +590,20 @@
 
     document.querySelector(".controles .atirar").addEventListener("touchstart", (event) => {
       event.preventDefault()
+
+      if (e.touches.length < 2) return
+
       const key = event.target.className;
       comandosPressionados[key] = true      
     });
 
     document.querySelector(".controles .atirar").addEventListener("touchend", (event) => {
       event.preventDefault()
+
+      // if (e.touches.length < 2) return
+
       const key = event.target.className;
-      comandosPressionados[key] = true
+      comandosPressionados[key] = false
       delete comandosPressionados[key]
     });
 
