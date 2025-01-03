@@ -654,7 +654,12 @@
         xMoveAnterior = touch.clientX
       }
 
-      let direcao = diferencaMoveX > 0 ? "dir" : "esq"
+      let direcao
+      if (diferencaMoveX > 0) {
+        direcao = "dir"        
+      } else if (diferencaMoveX < 0) {
+        direcao = "esq"        
+      }
 
       if (direcao == "dir") {
           nave.controle.direita = true
@@ -662,6 +667,9 @@
       } else if (direcao == "esq") {
         nave.controle.esquerda = true
         nave.controle.direita = false
+      } else {
+        nave.controle.direita = false
+        nave.controle.esquerda = false
       }
 
       // console.log("Direcao: " + direcao)
