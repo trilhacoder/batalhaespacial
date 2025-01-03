@@ -262,7 +262,9 @@
           let posicaoNaveY = this.jogador == "eu" ? this.posicaoY : this.posicaoY + this.altura
           let tamanhoBala = isMobile() ? 5 : 10
           this.tiros.push({ largura: tamanhoBala, altura: tamanhoBala, posicaoX: this.posicaoX + this.largura/2 - 10/2, posicaoY: posicaoNaveY})
-          new Audio("tiro.mp3").play()
+          let audioTiro = new Audio("tiro.mp3")
+          audioTiro.volume = 0.5
+          audioTiro.play()
           this.ultimoDisparo = new Date()
         }
       }
@@ -437,7 +439,9 @@
                 indexTirosAtingidos.push(index)
                 document.querySelectorAll(".vidas_inimigo .vida")[nave2.vidas-1].classList.add("vida_usada")
                 nave2.vidas--
-                new Audio("tiro_impacto.mp3").play()
+                let audioTiroImpacto = new Audio("tiro_impacto.mp3")
+                audioTiroImpacto.volume = 0.5
+                audioTiroImpacto.play()
                 if (nave2.vidas <= 0) {
                   nave2.vivo = false
                   // console.log("Acertou!")
@@ -462,7 +466,9 @@
                 indexTirosAtingidos2.push(index)
                 document.querySelectorAll(".vidas_eu .vida")[nave.vidas-1].classList.add("vida_usada")
                 nave.vidas--
-                new Audio("tiro_impacto.mp3").play()
+                let audioTiroImpacto = new Audio("tiro_impacto.mp3")
+                audioTiroImpacto.volume = 0.5
+                audioTiroImpacto.play()
                 if (nave.vidas <= 0) {
                   nave.vivo = false
                   // console.log("Acertou!")
